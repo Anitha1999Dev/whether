@@ -24,7 +24,7 @@ export default function Whether() {
 
     <>
     <input onChange={(e)=>setCity(e.target.value)}/>
-    <button onClick={fetchWhether}>Search</button>
+    <button onClick={fetchWhether}>Search City</button>
     {whetherdata && whetherdata.main ?
       <div>
           <h2>{whetherdata.name}</h2>
