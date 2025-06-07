@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+export default function Whether() {
+
+  const apikey = "49e568fe25efaeb4e55b3bac433b9f61";
+  const [city,setCity]=useState("");
+  const [whetherdata,whethersetData]=useState(null)
+   
+  const fetchWhether= async ()=>{
+
+    try{
+           const data= await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apikey}`).
+           then(res=>res.json());
+           whethersetData(data)
+    }
+    catch(err){
+        console.log(err)
+
+    }
+  
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
 
-export default App;
+    <>
+    <input onChange={(e)=>setCity(e.target.value)}/>
+    <button onClick={fetchWhether}>Search</button>
+    {whetherdata && whetherdata.main ?
+      <div>
+          <h2>{whetherdata.name}</h2>
+          <p>Temperature: {whetherdata.main.temp}°C</p>
+          <p>Condition: {whetherdata.weather[0].description}</p>
+          <p>Humidity: {whetherdata.main.humidity}%</p>
+          <p>Wind Speed: {whetherdata.wind.speed} m/s</p>
+        </div>
+   :
+   <p>no data</p>
+    
+    }
+   
+    </>
+
+
+  )
+
+}
