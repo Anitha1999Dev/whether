@@ -1,46 +1,89 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import "./App.css";
 
-export default function Whether() {
+export default function WeatherApp() {
+  const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const apikey = "49e568fe25efaeb4e55b3bac433b9f61";
-  const [city,setCity]=useState("");
-  const [whetherdata,whethersetData]=useState(null)
-   
-  const fetchWhether= async ()=>{
+  const [weatherData, setWeatherData] = useState({
+    name: "Chennai",
+    main: {
+      temp: 20,
+      humidity: 56
+    },
+    wind: {
+      speed: 15
+    },
+    weather: [
+      {
+        description: "Light Rain",
+        icon: "10d"
+      }
+    ],
+    cod: 200
+  });
 
-    try{
-           const data= await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apikey}`).
-           then(res=>res.json());
-           whethersetData(data)
+  const apiKey = "49e568fe25efaeb4e55b3bac433b9f61";
+
+  const fetchWeather = async () => {
+    if (!city) return;
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apiKey}`
+      );
+      const data = await res.json();
+      setWeatherData(data);
+    } catch (err) {
+      console.error(err);
     }
-    catch(err){
-        console.log(err)
-
-    }
-  
+    finally {
+    setLoading(false);
   }
+  };
 
   return (
-
-    <>
-    <input onChange={(e)=>setCity(e.target.value)}/>
-    <button onClick={fetchWhether}>Search</button>
-    {whetherdata && whetherdata.main ?
-      <div>
-          <h2>{whetherdata.name}</h2>
-          <p>Temperature: {whetherdata.main.temp}°C</p>
-          <p>Condition: {whetherdata.weather[0].description}</p>
-          <p>Humidity: {whetherdata.main.humidity}%</p>
-          <p>Wind Speed: {whetherdata.wind.speed} m/s</p>
+    <div className="weather-container">
+      <div className="weather-card">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Enter the cityname"
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <button onClick={fetchWeather}>🔍</button>
         </div>
-   :
-   <p>no data</p>
-    
-    }
-   
-    </>
 
-
-  )
-
+        {
+        
+        loading ? (
+  <div className="loader"></div>
+) :
+        weatherData && weatherData.cod === 200 ? (
+          <>
+            <div className="weather-icon">
+              <img
+                src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+                alt="Weather Icon"
+              />
+            </div>
+            <div className="temperature">{Math.round(weatherData.main.temp)}°C</div>
+            <div className="city">{weatherData.name}</div>
+            <div className="details">
+              <div className="detail">
+                <img src="https://img.icons8.com/ios/50/humidity.png" alt="humidity" />
+                <p>{weatherData.main.humidity}%<br /><span>Humidity</span></p>
+              </div>
+              <div className="detail">
+                <img src="https://img.icons8.com/ios/50/wind.png" alt="wind" />
+                <p>{weatherData.wind.speed} km/h<br /><span>Wind</span></p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="no-data">Enter a valid city to get weather info</p>
+        )}
+      </div>
+    </div>
+  );
 }
