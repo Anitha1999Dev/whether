@@ -43,6 +43,7 @@ export default function WeatherApp() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="weather-container">
       <div className="weather-card">
         <div className="search-box">
@@ -52,8 +53,22 @@ export default function WeatherApp() {
             onChange={(e) => setCity(e.target.value)}
           />
           <button onClick={fetchWeather}>🔍</button>
+=======
+
+    <>
+    <input onChange={(e)=>setCity(e.target.value)}/>
+    <button onClick={fetchWhether}>Search City</button>
+    {whetherdata && whetherdata.main ?
+      <div>
+          <h2>{whetherdata.name}</h2>
+          <p>Temperature: {whetherdata.main.temp}°C</p>
+          <p>Condition: {whetherdata.weather[0].description}</p>
+          <p>Humidity: {whetherdata.main.humidity}%</p>
+          <p>Wind Speed: {whetherdata.wind.speed} m/s</p>
+>>>>>>> 588759209ac39d5c3a073baf076984e8940a8294
         </div>
 
+<<<<<<< HEAD
         {
         
         loading ? (
@@ -86,4 +101,9 @@ export default function WeatherApp() {
       </div>
     </div>
   );
+=======
+
+  )
+
+>>>>>>> 588759209ac39d5c3a073baf076984e8940a8294
 }
